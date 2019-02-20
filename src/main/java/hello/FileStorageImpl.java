@@ -236,7 +236,7 @@ public class FileStorageImpl implements FileStorage{
                     for (Map.Entry<String, String> par : replacementMap.entrySet()) {
                         htmlString = htmlString.replace(par.getKey(), par.getValue());
                     }
-                    File newHtmlFile = new File(rootLocationZip+"/"+html.getName());
+                    File newHtmlFile = new File(rootLocationZip+"/"+html.getName().replace(".html","_lol.html"));
                     FileUtils.writeStringToFile(newHtmlFile, htmlString);
 
                     newHtmlFile = null;
