@@ -118,10 +118,15 @@ public class FileStorageImpl implements FileStorage{
                     ZipEntry entry = (ZipEntry) entries.nextElement();
                     if (entry.isDirectory()) {
                         new File(String.valueOf(pathFolder), entry.getName()).mkdirs();
+                        log.info("unpackZip Directory: "+entry.getName());
                     } else {
                         try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(new File(String.valueOf(pathFolder), entry.getName())));
                         InputStream inputStream = zip.getInputStream(entry)) {
                             write(inputStream, bufferedOutputStream);
+                            log.info("unpackZip file: "+entry.getName());
+                        }
+                        catch (Exception e){
+                            log.info("unpackZip: "+e.getMessage());
                         }
                     }
                 }
