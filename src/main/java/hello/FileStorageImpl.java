@@ -43,7 +43,8 @@ public class FileStorageImpl implements FileStorage{
         }
 
         //processing
-        List<String> listFoldrtForProc= unpackZip(String.valueOf(rootLocation));
+        List<String> listFoldrtForProc = unpackZip(String.valueOf(rootLocation));
+        log.info("size list: "+listFoldrtForProc.size());
         processFolderFiles(listFoldrtForProc);
     }
 
@@ -135,7 +136,8 @@ public class FileStorageImpl implements FileStorage{
                 System.out.println(ex.getMessage());
             }
 
-            listFFR.add(String.valueOf(pathFolder));
+            listFFR.add(nameFolder);
+            log.info("listFFR.add: "+nameFolder);
         }
         return listFFR;
     }
