@@ -153,7 +153,7 @@ public class FileStorageImpl implements FileStorage{
         for(String foldr:listFoldrtForProc) {
 
             log.info("foldr: "+foldr+" - "+Files.exists(Paths.get(foldr)));
-            File dirIntoPars = new File(foldr+"\\");
+            File dirIntoPars = new File(foldr+"/");
             log.info("dirIntoPars: "+dirIntoPars);
             File[] arrFilesIntoPars = dirIntoPars.listFiles();
             log.info("arrFilesIntoPars length: "+arrFilesIntoPars.length);
