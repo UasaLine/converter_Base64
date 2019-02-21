@@ -105,10 +105,7 @@ public class FileStorageImpl implements FileStorage{
             }
 
             String nameFolder = myFile.getName().replace(".zip","");
-            String nameFolderZip = nameFolder+"/zip";
-
             Path pathFolder = Paths.get(nameFolder);
-            Path pathFolderZip = Paths.get(nameFolderZip);
 
             if (Files.exists(pathFolder)) {//filters only unprocessed
                 continue;
@@ -116,7 +113,6 @@ public class FileStorageImpl implements FileStorage{
 
             try (ZipFile zip = new ZipFile(myFile.getPath())) {
                 Files.createDirectory(pathFolder);
-                Files.createDirectory(pathFolderZip);
                 Enumeration entries = zip.entries();
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = (ZipEntry) entries.nextElement();
@@ -171,7 +167,7 @@ public class FileStorageImpl implements FileStorage{
                     //into js to html
                     htmlString = htmlString.replace("src=\""+replasJsString+"\">", ">"+toReplasJsString);
 
-                    File newHtmlFile = new File(foldr+"/zip/"+html.getName());
+                    File newHtmlFile = new File(foldr+"/"+html.getName().replace(".html","DFP.html"));
                     FileUtils.writeStringToFile(newHtmlFile, htmlString);
                     html = newHtmlFile;
 
@@ -200,7 +196,7 @@ public class FileStorageImpl implements FileStorage{
                         int finalIndex = lineFile.indexOf("\", id:\"");
                         if ((startingIndex != -1) && (finalIndex != -1)) {
                             String replaceKey = lineFile.substring(startingIndex, finalIndex);
-                            String replaceValue = convertPictureFromLineToBase64(replaceKey, lstIntoPars);
+                            String replaceValue = convertPictureFromLineToBase64(replaceKey.replace("{src:\"",""), foldr);
 
                             if(replaceValue=="null") {
                                 log.error("replaceValue: null");
@@ -295,23 +291,16 @@ public class FileStorageImpl implements FileStorage{
         in.close();
     }
 
-    public String convertPictureFromLineToBase64(String replaceKey,List<File> lstIntoPars) {
+    public String convertPictureFromLineToBase64(String replaceKey,String lstIntoPars) {
 
-        File dirPicture = null;
-        for (File file : lstIntoPars) {
-            if (file.isDirectory()) {
-                dirPicture = file;
-                break;
-            }
-        }
-        log.info("dirPicture: "+dirPicture.getPath());
-        String pathPicture = dirPicture.getPath() + "/" + replaceKey.substring(replaceKey.indexOf("images/") + 7);
+        String pathPicture = lstIntoPars+"\\"+replaceKey.replace("/","\\");
+        log.info("dirPicture: "+pathPicture);
 
         try {
             File picture = new File(pathPicture);
             log.info("picture: "+picture.getPath());
             String imgstr = encodeFileToBase64Binary(picture);
-            log.info("picture: Base64"+imgstr);
+            log.info("picture: Base64."+imgstr);
             picture = null;
             return "{type:createjs.AbstractLoader.IMAGE, src:\"data:image/png;base64,"+imgstr;
 
