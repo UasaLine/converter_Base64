@@ -123,15 +123,15 @@ public class FileStorageImpl implements FileStorage{
                 Enumeration entries = zip.entries();
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = (ZipEntry) entries.nextElement();
-                    String filePath = entry.getName().replace("/","\\");
+                    String filePath = entry.getName();//.replace("/","\\");
                     if (entry.isDirectory()) {
-                        new File(nameFolder+"\\"+filePath).mkdirs();
-                        log.info("unpackZip Directory: "+nameFolder+"\\"+filePath+" - "+Files.exists(Paths.get(nameFolder+"\\"+filePath)));
+                        new File(nameFolder+"/"+filePath).mkdirs();
+                        log.info("unpackZip Directory: "+nameFolder+"/"+filePath+" - "+Files.exists(Paths.get(nameFolder+"/"+filePath)));
                     } else {
-                        try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(new File(nameFolder+"\\"+filePath)));
+                        try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(new File(nameFolder+"/"+filePath)));
                         InputStream inputStream = zip.getInputStream(entry)) {
                             write(inputStream, bufferedOutputStream);
-                            log.info("unpackZip file: "+nameFolder+"\\"+filePath+" - "+Files.exists(Paths.get(nameFolder+"\\"+filePath)));
+                            log.info("unpackZip file: "+nameFolder+"/"+filePath+" - "+Files.exists(Paths.get(nameFolder+"/"+filePath)));
                         }
                         catch (Exception e){
                             log.info("unpackZip: "+e.getMessage());
