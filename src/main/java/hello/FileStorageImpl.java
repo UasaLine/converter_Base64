@@ -328,21 +328,22 @@ public class FileStorageImpl implements FileStorage{
         return imageString;
     }
 
-    private static String encodeFileToBase64Binary(File file){
+    private String encodeFileToBase64Binary(File file){
         String encodedfile = null;
-        try {
-            FileInputStream fileInputStreamReader = new FileInputStream(file);
+        try (FileInputStream fileInputStreamReader = new FileInputStream(file)) {
+            log.info("picture in encode: "+file.getPath());
             byte[] bytes = new byte[(int)file.length()];
             fileInputStreamReader.read(bytes);
             encodedfile = new String(Base64.encodeBase64(bytes), "UTF-8");
-
-            fileInputStreamReader.close();
+            log.info("encodedfile: "+encodedfile);
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            log.error(e.getMessage());
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+            log.error(e.getMessage());
         }
 
         return encodedfile;
