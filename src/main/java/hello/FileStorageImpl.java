@@ -305,7 +305,7 @@ public class FileStorageImpl implements FileStorage{
             }
         }
         log.info("dirPicture: "+dirPicture.getPath());
-        String pathPicture = dirPicture.getPath() + "\\" + replaceKey.substring(replaceKey.indexOf("images/") + 7);
+        String pathPicture = dirPicture.getPath() + "/" + replaceKey.substring(replaceKey.indexOf("images/") + 7);
 
         try {
             File picture = new File(pathPicture);
