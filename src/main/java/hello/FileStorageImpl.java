@@ -330,8 +330,9 @@ public class FileStorageImpl implements FileStorage{
 
     private String encodeFileToBase64Binary(File file){
         String encodedfile = null;
+        log.info("picture in encode1: "+file.getPath());
         try (FileInputStream fileInputStreamReader = new FileInputStream(file)) {
-            log.info("picture in encode: "+file.getPath());
+            log.info("picture in encode2: "+file.getPath());
             byte[] bytes = new byte[(int)file.length()];
             fileInputStreamReader.read(bytes);
             encodedfile = new String(Base64.encodeBase64(bytes), "UTF-8");
