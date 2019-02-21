@@ -315,7 +315,7 @@ public class FileStorageImpl implements FileStorage{
 
     public String convertPictureFromLineToBase64(String replaceKey,String lstIntoPars) {
 
-        String pathPicture = lstIntoPars+"\\"+replaceKey.replace("/","\\");
+        String pathPicture = lstIntoPars+"/"+replaceKey;
         log.info("dirPicture: "+pathPicture);
 
         try {
