@@ -151,16 +151,18 @@ public class FileStorageImpl implements FileStorage{
     public void processFolderFiles(List<String> listFoldrtForProc){
 
         for(String foldr:listFoldrtForProc) {
-
+            log.info("dirIntoPars: "+foldr);
             File dirIntoPars = new File(foldr);
             File[] arrFilesIntoPars = dirIntoPars.listFiles();
             List<File> lstIntoPars = Arrays.asList(arrFilesIntoPars);
+            log.info("lstIntoPars size: "+lstIntoPars.size());
 
             File js = null;
             File html = null;
             File folderPicter = null;
 
             for (File parsFile : lstIntoPars){
+                log.info("for ->: "+parsFile);
                 if(parsFile.isDirectory()){
                     folderPicter =  parsFile;
                 }
@@ -173,6 +175,7 @@ public class FileStorageImpl implements FileStorage{
             }
 
             if(!(js ==null)){
+                log.info("js ->: "+js.length());
                 try {
                     String replasJsString = js.getName();
                     String toReplasJsString = FileUtils.readFileToString(js);
@@ -195,6 +198,7 @@ public class FileStorageImpl implements FileStorage{
             }
 
             if (!(html ==null)){
+                log.info("html ->: "+html.length());
                 try {
                     BufferedReader bufTextFile = new BufferedReader(new FileReader(html));
                     Map<String, String> replacementMap = new HashMap<>();
