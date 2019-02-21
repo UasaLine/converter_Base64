@@ -201,6 +201,11 @@ public class FileStorageImpl implements FileStorage{
                         if ((startingIndex != -1) && (finalIndex != -1)) {
                             String replaceKey = lineFile.substring(startingIndex, finalIndex);
                             String replaceValue = convertPictureFromLineToBase64(replaceKey, lstIntoPars);
+
+                            if(replaceValue=="null") {
+                                log.error("replaceValue: null");
+                            }
+
                             replacementMap.put(replaceKey, replaceValue);
                         }
                         //check on body
@@ -299,16 +304,15 @@ public class FileStorageImpl implements FileStorage{
                 break;
             }
         }
+        log.info("dirPicture: "+dirPicture.getPath());
         String pathPicture = dirPicture.getPath() + "\\" + replaceKey.substring(replaceKey.indexOf("images/") + 7);
 
         try {
             File picture = new File(pathPicture);
-            //BufferedImage img = ImageIO.read(picture);
-            //String imgstr = encodeToString(img, "png");
+            log.info("picture: "+picture.getPath());
             String imgstr = encodeFileToBase64Binary(picture);
-
+            log.info("picture: Base64"+imgstr);
             picture = null;
-
             return "{type:createjs.AbstractLoader.IMAGE, src:\"data:image/png;base64,"+imgstr;
 
         } catch (Exception ex) {
