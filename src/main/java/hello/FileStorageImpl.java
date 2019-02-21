@@ -321,10 +321,12 @@ public class FileStorageImpl implements FileStorage{
         try {
             File picture = new File(pathPicture);
             log.info("picture: "+picture.getPath());
+            int andPictureint = picture.getPath().indexOf(".");
+            String andPicture = picture.getPath().substring(andPictureint+1);
             String imgstr = encodeFileToBase64Binary(picture);
-            log.info("picture: Base64."+imgstr);
+            log.info("picture: Base64 null - "+(imgstr=="null"));
             picture = null;
-            return "{type:createjs.AbstractLoader.IMAGE, src:\"data:image/png;base64,"+imgstr;
+            return "{type:createjs.AbstractLoader.IMAGE, src:\"data:image/"+andPicture+";base64,"+imgstr;
 
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
@@ -359,7 +361,7 @@ public class FileStorageImpl implements FileStorage{
             byte[] bytes = new byte[(int)file.length()];
             fileInputStreamReader.read(bytes);
             encodedfile = new String(Base64.encodeBase64(bytes), "UTF-8");
-            log.info("encodedfile: "+encodedfile);
+            log.info("encodedfile null: "+(encodedfile=="null"));
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
