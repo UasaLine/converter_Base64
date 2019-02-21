@@ -45,7 +45,13 @@ public class FileStorageImpl implements FileStorage{
         //processing
         List<String> listFoldrtForProc = unpackZip(String.valueOf(rootLocation));
         log.info("size list: "+listFoldrtForProc.size());
-        processFolderFiles(listFoldrtForProc);
+
+        try {
+            processFolderFiles(listFoldrtForProc);
+        }
+        catch (Exception e){
+            log.error(e.getMessage());
+        }
     }
 
 
