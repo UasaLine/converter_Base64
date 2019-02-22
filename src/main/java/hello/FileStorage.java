@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import org.springframework.core.io.Resource;
 public interface FileStorage {
-    public void store(MultipartFile file);
+    public String store(MultipartFile file);
     public Resource loadFile(String filename);
     public void deleteAll();
     public void init();

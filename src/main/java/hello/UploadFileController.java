@@ -31,8 +31,7 @@ public class UploadFileController {
             fileNames = Arrays.asList(files)
                     .stream()
                     .map(file -> {
-                        fileStorage.store(file);
-                        return file.getOriginalFilename();
+                         return fileStorage.store(file);
                     })
                     .collect(Collectors.toList());
 

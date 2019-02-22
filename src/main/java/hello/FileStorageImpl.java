@@ -34,24 +34,21 @@ public class FileStorageImpl implements FileStorage{
     private static final Path rootLocationZip = Paths.get("filestorageZip");
 
     @Override
-    public void store(MultipartFile file){
+    public String store(MultipartFile file){
         try {
             Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+            //processing
+            String FoldrtForProc = unpackZip(String.valueOf(rootLocation.resolve(file.getOriginalFilename())));
+            log.info("FoldrtForProc isEmpty: "+FoldrtForProc.isEmpty());
+            return processFolderFiles(FoldrtForProc);
+
         } catch (Exception e) {
             System.out.println(e);
             throw new RuntimeException("FAIL! -> message = " + e.getMessage());
         }
 
-        //processing
-        List<String> listFoldrtForProc = unpackZip(String.valueOf(rootLocation));
-        log.info("size list: "+listFoldrtForProc.size());
 
-        try {
-            processFolderFiles(listFoldrtForProc);
-        }
-        catch (Exception e){
-            log.error(e.getMessage());
-        }
+
     }
 
 
@@ -97,26 +94,18 @@ public class FileStorageImpl implements FileStorage{
         }
     }
 
-    public List<String> unpackZip(String pathDir){
+    public String unpackZip(String pathZipIntoFile){
 
-        List<String> listFFR = new ArrayList<>();
+        File myFile = new File(pathZipIntoFile);
 
-        File dir = new File(pathDir);
-        File[] arrFiles = dir.listFiles();
-        List<File> lst = Arrays.asList(arrFiles);
 
-        for(File myFile:lst) {
 
             if (!myFile.getName().endsWith(".zip")){//filters only zip
-               continue;
+                return null;
             }
 
             String nameFolder = myFile.getName().replace(".zip","");
             Path pathFolder = Paths.get(nameFolder);
-
-            if (Files.exists(pathFolder)) {//filters only unprocessed
-                continue;
-            }
 
             try (ZipFile zip = new ZipFile(myFile.getPath())) {
                 Files.createDirectory(pathFolder);
@@ -129,7 +118,7 @@ public class FileStorageImpl implements FileStorage{
                         log.info("unpackZip Directory: "+nameFolder+"/"+filePath+" - "+Files.exists(Paths.get(nameFolder+"/"+filePath)));
                     } else {
                         try(BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(new File(nameFolder+"/"+filePath)));
-                        InputStream inputStream = zip.getInputStream(entry)) {
+                            InputStream inputStream = zip.getInputStream(entry)) {
                             write(inputStream, bufferedOutputStream);
                             log.info("unpackZip file: "+nameFolder+"/"+filePath+" - "+Files.exists(Paths.get(nameFolder+"/"+filePath)));
                         }
@@ -142,15 +131,12 @@ public class FileStorageImpl implements FileStorage{
                 System.out.println(ex.getMessage());
             }
 
-            listFFR.add(nameFolder);
+
             log.info("listFFR.add: "+nameFolder);
-        }
-        return listFFR;
+            return nameFolder;
     }
 
-    public void processFolderFiles(List<String> listFoldrtForProc){
-
-        for(String foldr:listFoldrtForProc) {
+    public String processFolderFiles(String foldr){
 
             log.info("foldr: "+foldr+" - "+Files.exists(Paths.get(foldr)));
             File dirIntoPars = new File(foldr+"/");
@@ -187,7 +173,8 @@ public class FileStorageImpl implements FileStorage{
                     //into js to html
                     htmlString = htmlString.replace("src=\""+replasJsString+"\">", ">"+toReplasJsString);
 
-                    File newHtmlFile = new File(foldr+"/"+html.getName().replace(".html","DFP.html"));
+                    String nameFinalFile = getNamelFile(rootLocationZip,html,"DFP");
+                    File newHtmlFile = new File(nameFinalFile);
                     FileUtils.writeStringToFile(newHtmlFile, htmlString);
                     html = newHtmlFile;
 
@@ -258,10 +245,14 @@ public class FileStorageImpl implements FileStorage{
                     for (Map.Entry<String, String> par : replacementMap.entrySet()) {
                         htmlString = htmlString.replace(par.getKey(), par.getValue());
                     }
-                    File newHtmlFile = new File(rootLocationZip+"/"+html.getName().replace(".html","DFP.html"));
+                    String nameFinalFile = getNamelFile(rootLocationZip,html,"DFP");
+                    File newHtmlFile = new File(nameFinalFile);
                     FileUtils.writeStringToFile(newHtmlFile, htmlString);
 
-                    newHtmlFile = null;
+                    deleteToList(foldr);
+
+                    return newHtmlFile.getName();
+
                 }
                 catch (Exception ex){
                     System.out.println(ex.getMessage());
@@ -271,11 +262,8 @@ public class FileStorageImpl implements FileStorage{
             js = null;
             dirIntoPars = null;
 
-
-
             deleteToList(foldr);
-        }
-
+            return "";
     }
 
     public void packZip(List<String> listFoldrtForProc,String folderZipEnd){
@@ -301,6 +289,17 @@ public class FileStorageImpl implements FileStorage{
                 }
             }
         }
+    }
+
+    private String getNamelFile(Path pathFolder,File file,String replaceString){
+
+        String name;
+        if (!file.getName().endsWith("DFP.html"))
+            name =  file.getName().replace(".html","DFP.html");
+        else
+            name =  file.getName();
+
+        return rootLocationZip+"/"+name;
     }
 
     private static void write(InputStream in, OutputStream out) throws IOException {

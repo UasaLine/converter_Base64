@@ -41,7 +41,7 @@ public class DownloadFileController {
     /*
      * Download Files
      */
-    @GetMapping("/files/{filename}")
+    @GetMapping("/{filename}")//@GetMapping("/files/{filename}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
         Resource file = fileStorage.loadFile(filename);
         return ResponseEntity.ok()
