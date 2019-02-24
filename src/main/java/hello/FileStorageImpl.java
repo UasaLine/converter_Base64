@@ -46,11 +46,7 @@ public class FileStorageImpl implements FileStorage{
             System.out.println(e);
             throw new RuntimeException("FAIL! -> message = " + e.getMessage());
         }
-
-
-
     }
-
 
     @Override
     public Resource loadFile(String filename) {
@@ -94,7 +90,7 @@ public class FileStorageImpl implements FileStorage{
         }
     }
 
-    public String unpackZip(String pathZipIntoFile){
+    private String unpackZip(String pathZipIntoFile){
 
         File myFile = new File(pathZipIntoFile);
 
@@ -136,7 +132,7 @@ public class FileStorageImpl implements FileStorage{
             return nameFolder;
     }
 
-    public String processFolderFiles(String foldr){
+    private String processFolderFiles(String foldr){
 
             log.info("foldr: "+foldr+" - "+Files.exists(Paths.get(foldr)));
             File dirIntoPars = new File(foldr+"/");
@@ -251,6 +247,9 @@ public class FileStorageImpl implements FileStorage{
 
                     deleteToList(foldr);
 
+                    if(newHtmlFile.getName()=="")
+                        return "error 500";
+
                     return newHtmlFile.getName();
 
                 }
@@ -263,32 +262,7 @@ public class FileStorageImpl implements FileStorage{
             dirIntoPars = null;
 
             deleteToList(foldr);
-            return "";
-    }
-
-    public void packZip(List<String> listFoldrtForProc,String folderZipEnd){
-        for(String pathForder:listFoldrtForProc){
-
-            File dir = new File(pathForder);
-            File[] arrFiles = dir.listFiles();
-            List<File> lst = Arrays.asList(arrFiles);
-
-            for (File delFile:lst){
-                if(!delFile.isDirectory()){
-                    delFile.delete();
-                }
-            }
-
-            dir = new File(pathForder+"/zip");
-            arrFiles = dir.listFiles();
-            lst = Arrays.asList(arrFiles);
-
-            for (File delFile:lst){
-                if(!delFile.isDirectory()){
-                    delFile.renameTo(new File(pathForder, delFile.getName()));
-                }
-            }
-        }
+            return "error 500";
     }
 
     private String getNamelFile(Path pathFolder,File file,String replaceString){
@@ -312,7 +286,7 @@ public class FileStorageImpl implements FileStorage{
         in.close();
     }
 
-    public String convertPictureFromLineToBase64(String replaceKey,String lstIntoPars) {
+    private String convertPictureFromLineToBase64(String replaceKey,String lstIntoPars) {
 
         String pathPicture = lstIntoPars+"/"+replaceKey;
         log.info("dirPicture: "+pathPicture);
@@ -331,24 +305,6 @@ public class FileStorageImpl implements FileStorage{
             System.out.println(ex.getMessage());
         }
         return "";
-    }
-
-    public static String encodeToString(BufferedImage image, String type) {
-        String imageString = null;
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-        try {
-            ImageIO.write(image, type, bos);
-            byte[] imageBytes = bos.toByteArray();
-
-            //BASE64Encoder encoder = new BASE64Encoder();
-            //imageString = encoder.encode(imageBytes);
-
-            bos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return imageString;
     }
 
     private String encodeFileToBase64Binary(File file){
