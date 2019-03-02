@@ -51,7 +51,7 @@ public class FileStorageImpl implements FileStorage {
         }
 
         try {
-            return processFilesFolder(nameFolder);
+            return processFilesFolder(nameFolder,rootLocationZip);
         }catch (Exception e){
             return " Error process files folder : "+e.getMessage();
         }
@@ -105,11 +105,11 @@ public class FileStorageImpl implements FileStorage {
             Path pathFolder = Paths.get(nameFolder);
 
             try (ZipFile zip = new ZipFile(myFile.getPath())) {
-                Files.createDirectory(pathFolder);
+                createDirectoryIf(pathFolder);
                 Enumeration entries = zip.entries();
                 while (entries.hasMoreElements()) {
                     ZipEntry entry = (ZipEntry) entries.nextElement();
-                    String filePath = entry.getName();//.replace("/","\\");
+                    String filePath = entry.getName();
                     if (entry.isDirectory()) {
                         new File(nameFolder+"/"+filePath).mkdirs();
                         log.info("unpackZip Directory: "+nameFolder+"/"+filePath+" - "+Files.exists(Paths.get(nameFolder+"/"+filePath)));
@@ -129,18 +129,16 @@ public class FileStorageImpl implements FileStorage {
             }
     }
 
-    public String processFilesFolder(String foldr) throws IOException {
-
+    public String processFilesFolder(String foldr,Path LocationZip) throws IOException {
 
             File js = getFileFromFolder(foldr,".js");
             File html = getFileFromFolder(foldr,".html");
 
-            html = jsEmbeddingInHtml(js,html);
+            html = jsEmbeddingInHtml(js,html,LocationZip);
 
             Map<String, String> replaceMap = searchForReplacementBlocks(html,foldr);
 
-            return processingHtmlFileByBlocks(html,foldr,replaceMap);
-
+            return processingHtmlFileByBlocks(html,foldr,replaceMap,rootLocationZip);
     }
 
     private String getNameFile(Path pathFolder, File file, String replaceString){
@@ -214,7 +212,7 @@ public class FileStorageImpl implements FileStorage {
 
     }
 
-    private File jsEmbeddingInHtml(File js,File html) throws IOException {
+    private File jsEmbeddingInHtml(File js,File html,Path LocationZip) throws IOException {
 
         if(!(js ==null)){
             log.info("js ->: "+js.length());
@@ -226,7 +224,7 @@ public class FileStorageImpl implements FileStorage {
                 //into js to html
                 htmlString = htmlString.replace("src=\""+replasJsString+"\">", ">"+toReplasJsString);
 
-                String nameFinalFile = getNameFile(rootLocationZip,html,"DFP");
+                String nameFinalFile = getNameFile(LocationZip,html,"DFP");
                 File newHtmlFile = new File(nameFinalFile);
                 FileUtils.writeStringToFile(newHtmlFile, htmlString);
                 return newHtmlFile;
@@ -295,7 +293,7 @@ public class FileStorageImpl implements FileStorage {
         return replacMap;
     }
 
-    private String processingHtmlFileByBlocks(File html,String foldr, Map<String, String> replaceMap){
+    private String processingHtmlFileByBlocks(File html,String foldr, Map<String, String> replaceMap,Path LocationZip){
 
         if (!(html ==null)){
             log.info("html ->: "+html.length());
@@ -305,7 +303,7 @@ public class FileStorageImpl implements FileStorage {
                 for (Map.Entry<String, String> par : replaceMap.entrySet()) {
                     htmlString = htmlString.replace(par.getKey(), par.getValue());
                 }
-                String nameFinalFile = getNameFile(rootLocationZip,html,"DFP");
+                String nameFinalFile = getNameFile(LocationZip,html,"DFP");
                 File newHtmlFile = new File(nameFinalFile);
                 FileUtils.writeStringToFile(newHtmlFile, htmlString);
 
@@ -325,7 +323,7 @@ public class FileStorageImpl implements FileStorage {
         return "html file is null.";
     }
 
-    private File getFileFromFolder(String foldr,String endsWith){
+    public File getFileFromFolder(String foldr,String endsWith){
 
         File dirIntoPars = new File(foldr+"/");
         File[] arrFilesIntoPars = dirIntoPars.listFiles();
@@ -333,6 +331,11 @@ public class FileStorageImpl implements FileStorage {
         return Arrays.stream(arrFilesIntoPars)
                 .filter(file -> file.getName().endsWith(endsWith))
                 .toArray(File[]::new)[0];
+    }
+
+    private void createDirectoryIf(Path pathFolder) throws IOException {
+        if (!(new File(pathFolder.toUri()).exists()))
+            Files.createDirectory(pathFolder);
     }
 }
 
