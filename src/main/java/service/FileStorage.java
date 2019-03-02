@@ -14,4 +14,5 @@ public interface FileStorage {
     public void deleteAll();
     public void init();
     public Stream<Path> loadFiles();
+    public void setFullScreen(String fullScreen);
 }

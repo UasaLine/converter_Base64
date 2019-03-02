@@ -29,6 +29,7 @@ public class FileStorageImpl implements FileStorage {
     Logger log = LoggerFactory.getLogger(this.getClass().getName());
     private final Path rootLocation = Paths.get("filestorage");
     private static final Path rootLocationZip = Paths.get("filestorageZip");
+    private String fullScreen;
 
     @Override
     public String store(MultipartFile file){
@@ -247,6 +248,13 @@ public class FileStorageImpl implements FileStorage {
 
                 String lineFile = bufTextFile.readLine();
 
+                //check fullScreen
+                if (("1".equals(fullScreen)) && (lineFile.indexOf("<head>")>-1)){
+                    String replaceKey = "<head>";
+                    String replaceValue = "<head>\n<script src=\"//reklama.ngs.ru/dfp-expand.js\"></script>";
+                    replacMap.put(replaceKey, replaceValue);
+                }
+
                 //check on the picture
                 int startingIndex = lineFile.indexOf("{src:");
                 int finalIndex = lineFile.indexOf("\", id:\"");
@@ -336,6 +344,10 @@ public class FileStorageImpl implements FileStorage {
     private void createDirectoryIf(Path pathFolder) throws IOException {
         if (!(new File(pathFolder.toUri()).exists()))
             Files.createDirectory(pathFolder);
+    }
+
+    public void setFullScreen(String fullScreen) {
+        this.fullScreen = fullScreen;
     }
 }
 

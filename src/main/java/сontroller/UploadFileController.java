@@ -26,8 +26,10 @@ public class UploadFileController {
     }
 
     @PostMapping("/")
-    public String uploadMultipartFile(@RequestParam("files") MultipartFile[] files, Model model) {
+    public String uploadMultipartFile(@RequestParam("files") MultipartFile[] files, @RequestParam(defaultValue = "0") String fullScreen, Model model) {
+
         List<String> fileNames = null;
+        fileStorage.setFullScreen(fullScreen);
 
         try {
             fileNames = Arrays.asList(files)

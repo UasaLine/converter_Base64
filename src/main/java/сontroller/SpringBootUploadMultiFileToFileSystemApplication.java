@@ -10,7 +10,7 @@ import javax.annotation.Resource;
 
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"сontroller","servis"})
+@ComponentScan(basePackages = {"сontroller","service"})
 public class SpringBootUploadMultiFileToFileSystemApplication implements CommandLineRunner {
 
     @Resource

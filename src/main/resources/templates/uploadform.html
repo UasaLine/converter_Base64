@@ -22,8 +22,10 @@
                         <input type="file" class="form-control" id="files"
                                placeholder="Upload Multiple Files"  name="files" multiple></input>
                     </div>
+                    <p><input type="checkbox" name="fullScreen" value="1"> fullscreen banner</p>
                     <button type="submit" class="btn btn-default" id="btnSubmit">upload and process</button>
                     <!--<a href="/files" class="btn btn-default" role="button">Files</a>-->
+
                 </form>
                 <div th:if="${message}">
                     <strong><span th:text="${message}"/></strong>
