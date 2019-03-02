@@ -243,16 +243,17 @@ public class FileStorageImpl implements FileStorage {
 
             boolean bodyTagOopen = false;
             boolean scriptTagOopen = false;
-
+            boolean fullScreenInstalled = false;
             while (bufTextFile.ready()) {
 
                 String lineFile = bufTextFile.readLine();
 
                 //check fullScreen
-                if (("1".equals(fullScreen)) && (lineFile.indexOf("<head>")>-1)){
+                if (!fullScreenInstalled &&("1".equals(fullScreen)) && (lineFile.indexOf("<head>")>-1)){
                     String replaceKey = "<head>";
                     String replaceValue = "<head>\n<script src=\"//reklama.ngs.ru/dfp-expand.js\"></script>";
                     replacMap.put(replaceKey, replaceValue);
+                    fullScreenInstalled = true;
                 }
 
                 //check on the picture
