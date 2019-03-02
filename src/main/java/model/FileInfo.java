@@ -1,6 +1,7 @@
 package model;
 
 public class FileInfo {
+
     private String filename;
     private String url;
 
