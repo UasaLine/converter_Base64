@@ -11,6 +11,9 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import com.googlecode.pngtastic.core.PngImage;
+import com.googlecode.pngtastic.core.PngOptimizer;
+import model.TypeFile;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -34,28 +37,14 @@ public class FileStorageImpl implements FileStorage {
     @Override
     public String store(MultipartFile file){
 
-        try {
-            if (!String.valueOf(rootLocation.resolve(file.getOriginalFilename())).endsWith(".zip"))//filters only zip
-                return "! the file is not a zip";
 
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
-        } catch (Exception e) {
-            return " Error copy file : "+e.getMessage();
+        if (String.valueOf(rootLocation.resolve(file.getOriginalFilename())).endsWith(".zip")){
+            return proceduresForZipFiles(file);
         }
-
-        String pathZipIntoFile = String.valueOf(rootLocation.resolve(file.getOriginalFilename()));
-        String nameFolder = pathZipIntoFile.replace(".zip","");
-        try {
-            unpackZipFile(pathZipIntoFile,nameFolder);
-        }catch (Exception e){
-            return " Error zip unpack file : "+e.getMessage();
+        else if(String.valueOf(rootLocation.resolve(file.getOriginalFilename())).endsWith(".png")){
+            return proceduresForPngFiles(file);
         }
-
-        try {
-            return processFilesFolder(nameFolder,rootLocationZip);
-        }catch (Exception e){
-            return " Error process files folder : "+e.getMessage();
-        }
+        return "! the file is not a *zip and is not a *png";
     }
 
     @Override
@@ -349,6 +338,57 @@ public class FileStorageImpl implements FileStorage {
 
     public void setFullScreen(String fullScreen) {
         this.fullScreen = fullScreen;
+    }
+
+    public String proceduresForZipFiles(MultipartFile file){
+
+        try {
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            return " Error copy file : "+e.getMessage();
+        }
+
+        String pathZipIntoFile = String.valueOf(rootLocation.resolve(file.getOriginalFilename()));
+        String nameFolder = pathZipIntoFile.replace(".zip","");
+        try {
+            unpackZipFile(pathZipIntoFile,nameFolder);
+        }catch (Exception e){
+            return " Error zip unpack file : "+e.getMessage();
+        }
+
+        try {
+            return processFilesFolder(nameFolder,rootLocationZip);
+        }catch (Exception e){
+            return " Error process files folder : "+e.getMessage();
+        }
+    }
+
+    public String proceduresForPngFiles(MultipartFile file){
+        try {
+
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+
+        String nameFile = this.rootLocation.resolve(file.getOriginalFilename()).toString();
+        createDirectoryIf(Paths.get(rootLocationZip.toString()));
+
+
+        // load png image from a file
+        final InputStream in = new BufferedInputStream(new FileInputStream(nameFile));
+        final PngImage image = new PngImage(in);
+
+        // optimize
+        final PngOptimizer optimizer = new PngOptimizer();
+        final PngImage optimizedImage = optimizer.optimize(image);
+
+        // export the optimized image to a new file
+        final ByteArrayOutputStream optimizedBytes = new ByteArrayOutputStream();
+        optimizedImage.writeDataOutputStream(optimizedBytes);
+        optimizedImage.export(rootLocationZip.toString()+"\\output.png", optimizedBytes.toByteArray());
+            return "output.png";
+        } catch (Exception e) {
+            return " Error copy file : "+e.getMessage();
+        }
+
     }
 }
 

@@ -49,6 +49,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!--https://github.com/depsypher/pngtastic-->
+        <dependency>
+            <groupId>com.github.depsypher</groupId>
+            <artifactId>pngtastic</artifactId>
+            <version>1.5</version>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-io -->
         <dependency>

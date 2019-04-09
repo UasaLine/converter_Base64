@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Convert_lol</title>
+    <title>Convert to Base64</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link href="../static/css/upload.css" th:href="@{/css/upload.css}" rel="stylesheet" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
@@ -18,12 +18,12 @@
                 <h3>Upload and process Files</h3>
                 <form method="POST" enctype="multipart/form-data" id="fileUploadForm">
                     <div class="form-group">
-                        <label class="control-label" for="files">Upload Multiple Files:</label>
+                        <label class="control-label" for="files">hello friend add zip file here</label>
                         <input type="file" class="form-control" id="files"
                                placeholder="Upload Multiple Files"  name="files" multiple></input>
                     </div>
                     <p><input type="checkbox" name="fullScreen" value="1"> fullscreen banner</p>
-                    <button type="submit" class="btn btn-default" id="btnSubmit">upload and process</button>
+                    <button type="submit" class="btn btn-default" id="btnSubmit">start</button>
                     <!--<a href="/files" class="btn btn-default" role="button">Files</a>-->
 
                 </form>
