@@ -23,6 +23,7 @@ public class UploadFileController {
     @GetMapping("/")
     public String index() {
         //return "uploadform";
+
         return "index_2";
     }
 
@@ -48,6 +49,7 @@ public class UploadFileController {
         }
 
         //return "uploadform";
+
         return "index_2";
     }
 
