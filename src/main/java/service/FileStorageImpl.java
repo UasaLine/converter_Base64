@@ -326,9 +326,14 @@ public class FileStorageImpl implements FileStorage {
         File dirIntoPars = new File(foldr+"/");
         File[] arrFilesIntoPars = dirIntoPars.listFiles();
 
-        return Arrays.stream(arrFilesIntoPars)
+        File[] endsWithArray = Arrays.stream(arrFilesIntoPars)
                 .filter(file -> file.getName().endsWith(endsWith))
-                .toArray(File[]::new)[0];
+                .toArray(File[]::new);
+
+        if (endsWithArray.length>0){
+            return endsWithArray[0];
+        }
+        return null;
     }
 
     private void createDirectoryIf(Path pathFolder) throws IOException {
